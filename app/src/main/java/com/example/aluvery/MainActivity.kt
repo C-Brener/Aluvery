@@ -10,11 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,7 +42,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AluveryTheme() {
-                Surface() {
+                Surface(modifier = Modifier.background(Color.Gray)) {
                     ProductItem()
                 }
             }
@@ -48,39 +52,54 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ProductItem() {
-    Column(
-        modifier = Modifier
-            .width(200.dp)
-            .height(250.dp)
-
-    ) {
-        Box(
+    Surface(elevation = 10.dp, shape = RoundedCornerShape(15.dp)) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .background(brush = Brush.horizontalGradient(colors = listOf(Purple500, Teal200)))
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(100.dp)
-                    .offset(y = 50.dp)
-                    .clip(shape = CircleShape)
-                    .align(Alignment.BottomCenter)
-            )
-        }
-        Spacer(modifier = Modifier.height(50.dp))
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = LoremIpsum(50).values.first(),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+                .heightIn(250.dp, 300.dp)
+                .widthIn(200.dp, 210.dp)
 
+        ) {
+            val size = 100.dp
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(size)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Purple500,
+                                Teal200
+                            )
+                        )
+                    )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(size)
+                        .offset(y = size/2)
+                        .clip(shape = CircleShape)
+                        .align(Alignment.BottomCenter)
                 )
-            Text(text = "R$14.99", fontSize = 14.sp, fontWeight = FontWeight(400), modifier = Modifier.padding(top=8.dp))
+            }
+            Spacer(modifier = Modifier.height(size/2))
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = LoremIpsum(50).values.first(),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+
+                    )
+                Text(
+                    text = "R$14.99",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight(400),
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
         }
     }
 }
@@ -94,13 +113,18 @@ fun ProductItemPreview() {
 //---------- Modifiers ----------
 // Existem algumas extensões de modifiers que só podem ser usadas em contextos especificos, por exemplo, Modifier.align é um modifier
 // que é utilizado em contextos de row ou column, isso porquê, esses modifeirs precisam de uma orientação para funcionar o seu alinhamento.
+
 // clip -> Serve para fazer cortes na forma que desejammos, no caso do exemplo acima desejavamos um circulo . https://foso.github.io/Jetpack-Compose-Playground/cookbook/how_to_create_custom_shape/
+
 // offset -> É um modifier de deslocamento, serve para deslocar um componente baseando-se no plano cartesiano. Quando o offset altera a posição de um item,
 // o mesmo continua ocupando o espaçamento da posição inicial, ou seja, é sempre bom utilizar o offset em locais que não acabe ferindo  o layout
 
+
+//widthIn & heigthIn define uma interseção de valores que podem ser atingidos para esses parametros, sendo o primeiro valor o minimo e o segundo valor o maximo
+
+
 // --------- Text ----------
 // O text é um componente que possui algumas propriedades que não estão inseridas dentro da interface do modifier, sendo assim
-
 
 
 
