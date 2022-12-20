@@ -17,12 +17,16 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ChallengerCompose() {
     Row(Modifier.width(150.dp)) {
-        Box(modifier = Modifier
-            .background(Color.Blue)
-            .height(50.dp)
-            .width(40.dp))
+        Box(
+            modifier = Modifier
+                .background(Color.Blue)
+                .height(50.dp)
+                .width(40.dp)
+        )
         Column {
-            Text(text = "Test 1", modifier = Modifier.fillMaxWidth().background(Color.LightGray))
+            Text(text = "Test 1", modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.LightGray))
             Text(text = "Test 2", modifier = Modifier.fillMaxWidth())
         }
     }
