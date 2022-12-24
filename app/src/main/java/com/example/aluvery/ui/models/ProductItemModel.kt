@@ -10,3 +10,8 @@ data class ProductItemModel(
     val withDescription:Boolean = false,
     val description:String = LoremIpsum(50).values.first()
 )
+
+data class ProductSectionModel(
+    val productSection:String,
+    val productListItem:List<ProductItemModel>
+)
