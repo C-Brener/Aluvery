@@ -30,16 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.aluvery.ui.extensions.toConverterBrazilianCurrency
+import com.example.aluvery.ui.models.ProductItemModel
 import com.example.aluvery.ui.theme.AluveryTheme
 import com.example.aluvery.ui.theme.Purple500
 import com.example.aluvery.ui.theme.Teal200
+import java.math.BigDecimal
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,11 +56,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+val listItens = listOf(
+    ProductItemModel("Hamburguer", BigDecimal(15.99), R.drawable.burger),
+    ProductItemModel("Pizza", BigDecimal(45.99), R.drawable.pizza),
+    ProductItemModel("Batata Frita", BigDecimal(5.99), R.drawable.fries),
+)
+
 @Composable
 fun ProductSection() {
     Column {
         Text(
-            text = "Title",
+            text = "Salgados",
             fontSize = 20.sp,
             fontWeight = FontWeight(400),
             modifier = Modifier.padding(
@@ -70,29 +78,30 @@ fun ProductSection() {
                 .horizontalScroll(state = rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(modifier = Modifier)
-            ProductItem(content = LoremIpsum(50).values.first(), withDescription = true)
-            ProductItem()
-            ProductItem()
-            Spacer(modifier = Modifier)
+
+            listItens.forEach {
+                Spacer(modifier = Modifier)
+                ProductItem(it.withDescription, it)
+                Spacer(modifier = Modifier)
+            }
+
         }
     }
 }
 
 
 @Composable
-fun ProductItem(withDescription: Boolean = false, content: String? = null) {
+fun ProductItem(withDescription: Boolean = false, content: ProductItemModel) {
     if (withDescription) {
-        if (content != null) {
-            ProductItemWithDescription(content)
-        }
+        ProductItemWithDescription(content)
+
     } else {
-        ProductItemWithoutDescription()
+        ProductItemWithoutDescription(content = content)
     }
 }
 
 @Composable
-fun ProductItemWithDescription(content: String) {
+fun ProductItemWithDescription(content: ProductItemModel) {
     Surface(elevation = 10.dp, shape = RoundedCornerShape(15.dp)) {
         Column(
             modifier = Modifier
@@ -116,37 +125,43 @@ fun ProductItemWithDescription(content: String) {
                     )
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = painterResource(id = content.productImage),
                     contentDescription = null,
                     modifier = Modifier
                         .size(size)
                         .offset(y = size / 2)
                         .clip(shape = CircleShape)
-                        .align(Alignment.BottomCenter)
+                        .align(Alignment.BottomCenter),
+                    contentScale = ContentScale.Crop
                 )
             }
             Spacer(modifier = Modifier.height(size / 2))
             Column() {
                 Text(
-                    text = LoremIpsum(50).values.first(),
+                    text = content.productName,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(horizontal = 16.dp)
-                    )
+                )
                 Text(
-                    text = "R$14.99",
+                    text = content.productValue.toConverterBrazilianCurrency(),
 
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400),
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)
                 )
-                Column(modifier = Modifier
-                    .padding(top = 10.dp)
-                    .background(Purple500)
-                    .fillMaxWidth()) {
-                    Text(text = content, modifier = Modifier.padding(horizontal = 16.dp))
+                Column(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .background(Purple500)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = content.description,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
                 }
             }
         }
@@ -156,7 +171,7 @@ fun ProductItemWithDescription(content: String) {
 
 
 @Composable
-fun ProductItemWithoutDescription() {
+fun ProductItemWithoutDescription(content: ProductItemModel) {
     Surface(elevation = 10.dp, shape = RoundedCornerShape(15.dp)) {
         Column(
             modifier = Modifier
@@ -179,7 +194,7 @@ fun ProductItemWithoutDescription() {
                     )
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = painterResource(id = content.productImage),
                     contentDescription = null,
                     modifier = Modifier
                         .size(size)
@@ -191,7 +206,7 @@ fun ProductItemWithoutDescription() {
             Spacer(modifier = Modifier.height(size / 2))
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = LoremIpsum(50).values.first(),
+                    text = content.productName,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
@@ -199,7 +214,7 @@ fun ProductItemWithoutDescription() {
 
                     )
                 Text(
-                    text = "R$14.99",
+                    text = content.productValue.toConverterBrazilianCurrency(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400),
                     modifier = Modifier.padding(top = 8.dp)
@@ -209,17 +224,17 @@ fun ProductItemWithoutDescription() {
     }
 }
 
-@Preview
-@Composable
-fun ProductItemPreview() {
-    ProductItem()
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun ProductSectionPreview() {
-    ProductSection()
-}
+//@Preview
+//@Composable
+//fun ProductItemPreview() {
+//    ProductItem()
+//}
+//
+//@Preview(showSystemUi = true)
+//@Composable
+//fun ProductSectionPreview() {
+//    ProductSection()
+//}
 
 //---------- Modifiers ----------
 // Existem algumas extensões de modifiers que só podem ser usadas em contextos especificos, por exemplo, Modifier.align é um modifier
