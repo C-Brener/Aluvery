@@ -23,17 +23,67 @@ Digitando "prev" no android studio criamos um composable com preview.
 @Preview(showSystemUi = true, name = "TextPreview")
 @Composable
 fun MyFirstComposablePreview() {
-  AluveryTheme {
-    Surface() {
-      MyFirstComposable()
+    AluveryTheme {
+        Surface() {
+            MyFirstComposable()
 
+        }
     }
-  }
 }
 ```
 
 # Composables Básicos de Layout
 
 * Row -> Os componentes dentro do Row é organizado de forma horizontal
+    ```kotlin
+     Row(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .background(Color.Green)
+                    .fillMaxHeight(0.1f)
+            ) {
+                Text(text = "Do Próprio")
+                Text(text = " Jetpack compose")
+            }
+    ```
 * Column -> Os componentes dentro do Column é organizado de forma vertical
-* Box -> Os componentes dentro do Box ficam um sobre o outro.
+    ```kotlin
+            Column(
+            Modifier
+                .padding(all = 8.dp)
+                .fillMaxWidth()
+                .background(color = Color.Red)
+        ) {
+            Text(text = "Testando diversos layouts")
+            Text(text = "Com composables padrões")
+        }
+    ```
+* Box -> Os componentes dentro do Box ficam um sobre o outro.7
+    ```kotlin
+     Box(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .background(Color.Cyan)
+            .fillMaxSize()
+
+    ) {
+        Text(text = "Testando diversos layouts")
+        Text(text = "Com composables padrões")
+    }
+    ```
+
+# Modifiers
+
+* É uma interface que é implementada nos composes que nos dar o poder de personalizar nossos composables.
+* A ordem da chamada do modifier de estilização importa, isso porquê a depender da chamada o comportamento pode ser diferente.
+* Existem algumas extensões de modifiers que só podem ser usadas em contextos específicos, por exemplo, Modifier.align é um modifier que é utilizado em contextos de row ou column, isso porquê, esses modifiers precisam de uma orientação para funcionar o seu alinhamento.
+* Quando trabalhamos com componentes externos, é sempre viável fazer com que o nosso composable seja alterado na hora de sua chamada por quem estar o chamando, isso porque ele acaba mantendo o comportamento original e sendo alterado pelo pai, exemplo, não devemos definir paddings em nossos composables
+
+  ## Alguns Modifiers comuns:
+  * [clip](https://foso.github.io/Jetpack-Compose-Playground/cookbook/how_to_create_custom_shape/) -> Serve para fazer cortes na forma que desejammos, no caso do exemplo acima desejavamos um circulo.
+  * [offset](https://developer.android.com/jetpack/compose/modifiers#offset) -> É um modifier de deslocamento, serve para deslocar um componente baseando-se no plano cartesiano. Quando o offset altera a posição de um item,  o mesmo continua ocupando o espaçamento da posição inicial, ou seja, é sempre bom utilizar o offset em locais que não acabe ferindo  o layout.
+  ## Row Modifiers:
+  * Quando trabalhamos com row ou com o Columns estamos denro do escopo desse componente em questão, por conta desse escopo temos acesso alguns tipos de propriedades, dentre essas propriedades podemos citar a arragenment, que é uma espécie de organização dos componentes que estão dentro do row, o arragenment tem alguns comportamentos de organização.
+  * Dentre os modifiers do Row temos o horizontalScrollable que nos dá a capacidade de ter um scrollamento no componente de row, podemos utilizar no parametro de state:
+    * ScrollState -> Definimos o ponto inicial do scroll em pixels, geralmente definido como 0
+    *  rememberScrollState -> Como o jetpack compose trabalha muito com estados temos o rememberScroll que define o estado de scrollamento e também persiste a posição em que paramos do scroll mesmo que haja recomposição de tela.
