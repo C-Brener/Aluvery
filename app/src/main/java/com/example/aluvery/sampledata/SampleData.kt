@@ -1,30 +1,69 @@
 package com.example.aluvery.sampledata
 
-import com.example.aluvery.R
 import com.example.aluvery.models.ProductItemModel
-import com.example.aluvery.models.ProductSectionModel
 import java.math.BigDecimal
 
-val listItensSalgados = listOf(
-    ProductItemModel("Hamburguer", BigDecimal(15.99), R.drawable.burger),
-    ProductItemModel("Pizza", BigDecimal(45.99), R.drawable.pizza),
-    ProductItemModel("Batata Frita", BigDecimal(5.99), R.drawable.fries),
-)
-val listItensDoces = listOf(
-    ProductItemModel("Brigadeiro", BigDecimal(15.99), R.drawable.placeholder),
-    ProductItemModel("Mousse", BigDecimal(45.99), R.drawable.placeholder),
-    ProductItemModel("Brownie", BigDecimal(5.99), R.drawable.placeholder),
-)
-val listProductSection = listOf(
-    ProductSectionModel(
-        productSection = "Salgados",
-        productListItem = listItensSalgados
-    ), ProductSectionModel(
-        productSection = "Salgados",
-        productListItem = listItensSalgados
+val sampleCandies = listOf(
+    ProductItemModel(
+        name = "Chocolate",
+        price = BigDecimal("3.99"),
+        image = "https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg",
     ),
-    ProductSectionModel(
-        productSection = "Doces",
-        productListItem = listItensDoces
+    ProductItemModel(
+        name = "Sorvete",
+        price = BigDecimal("5.99"),
+        image = "https://images.pexels.com/photos/1352278/pexels-photo-1352278.jpeg",
+    ),
+    ProductItemModel(
+        name = "Bolo",
+        price = BigDecimal("11.99"),
+        image = "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg",
     )
+)
+
+val sampleDrinks = listOf(
+    ProductItemModel(
+        name = "Cerveja",
+        price = BigDecimal("5.99"),
+        image = "https://images.pexels.com/photos/1552630/pexels-photo-1552630.jpeg",
+    ),
+    ProductItemModel(
+        name = "Refrigerante",
+        price = BigDecimal("4.99"),
+        image = "https://images.pexels.com/photos/2775860/pexels-photo-2775860.jpeg"
+    ),
+    ProductItemModel(
+        name = "Suco",
+        price = BigDecimal("7.99"),
+        image = "https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg"
+    ),
+    ProductItemModel(
+        name = "Água",
+        price = BigDecimal("2.99"),
+        image = "https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg"
+    )
+)
+
+val sampleProducts: List<ProductItemModel> = listOf(
+    ProductItemModel(
+        name = "Hamburguer",
+        price = BigDecimal("12.99"),
+        image = "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg"
+    ),
+    ProductItemModel(
+        name = "Pizza",
+        price = BigDecimal("19.99"),
+        image = "https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg"
+    ),
+    ProductItemModel(
+        name = "Batata frita",
+        price = BigDecimal("7.99"),
+        image = "https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg"
+    ), *sampleDrinks.toTypedArray(), *sampleCandies.toTypedArray()
+)
+
+val sampleSections = mapOf(
+    "Promoções" to sampleProducts,
+    "Doces" to sampleCandies,
+    "Bebidas" to sampleDrinks
 )

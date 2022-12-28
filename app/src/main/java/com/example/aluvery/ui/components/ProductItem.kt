@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -27,20 +29,87 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.aluvery.R
 import com.example.aluvery.extensions.toConverterBrazilianCurrency
 import com.example.aluvery.models.ProductItemModel
-import com.example.aluvery.ui.theme.Purple500
-import com.example.aluvery.ui.theme.Teal200
+import com.example.aluvery.ui.theme.AluveryTheme
+import com.example.aluvery.ui.theme.Indigo400
+import com.example.aluvery.ui.theme.Indigo500
+import java.math.BigDecimal
 
 @Composable
-fun ProductItem(withDescription: Boolean = false, content: ProductItemModel) {
-    if (withDescription) {
-        ProductItemWithDescription(content)
+fun ProductItem(product: ProductItemModel) {
+    Surface(
+        shape = RoundedCornerShape(15.dp),
+        elevation = 4.dp
+    ) {
+        Column(
+            Modifier
+                .heightIn(250.dp, 300.dp)
+                .width(200.dp)
+        ) {
+            val imageSize = 100.dp
+            Box(
+                modifier = Modifier
+                    .height(imageSize)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                MaterialTheme.colors.primary,
+                                MaterialTheme.colors.secondary
+                            )
+                        )
+                    )
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    // TODO: ajustar imagem do produto
+                    painter = painterResource(id = R.drawable.placeholder),
+                    contentDescription = null,
+                    Modifier
+                        .size(imageSize)
+                        .offset(y = imageSize / 2)
+                        .clip(shape = CircleShape)
+                        .align(Alignment.BottomCenter),
+                    contentScale = ContentScale.Crop
+                )
+            }
+            Spacer(modifier = Modifier.height(imageSize / 2))
+            Column(Modifier.padding(16.dp)) {
+                Text(
+                    text = product.name,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight(700),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = product.price.toConverterBrazilianCurrency(),
+                    Modifier.padding(top = 8.dp),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight(400)
+                )
+            }
+        }
+    }
+}
 
-    } else {
-        ProductItemWithoutDescription(content = content)
+@Preview(showBackground = true)
+@Composable
+private fun ProductItemPreview() {
+    AluveryTheme {
+        Surface {
+            ProductItem(
+                ProductItemModel(
+                    name = LoremIpsum(50).values.first(),
+                    price = BigDecimal("14.99")
+                )
+            )
+        }
     }
 }
 
@@ -62,14 +131,14 @@ fun ProductItemWithDescription(content: ProductItemModel) {
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                Purple500,
-                                Teal200
+                                Indigo500,
+                                Indigo400
                             )
                         )
                     )
             ) {
                 Image(
-                    painter = painterResource(id = content.productImage),
+                    painter = painterResource(id = R.drawable.placeholder),
                     contentDescription = null,
                     modifier = Modifier
                         .size(size)
@@ -82,7 +151,7 @@ fun ProductItemWithDescription(content: ProductItemModel) {
             Spacer(modifier = Modifier.height(size / 2))
             Column() {
                 Text(
-                    text = content.productName,
+                    text = content.name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
@@ -90,7 +159,7 @@ fun ProductItemWithDescription(content: ProductItemModel) {
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
                 Text(
-                    text = content.productValue.toConverterBrazilianCurrency(),
+                    text = content.price.toConverterBrazilianCurrency(),
 
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400),
@@ -99,7 +168,7 @@ fun ProductItemWithDescription(content: ProductItemModel) {
                 Column(
                     modifier = Modifier
                         .padding(top = 10.dp)
-                        .background(Purple500)
+                        .background(Indigo500)
                         .fillMaxWidth()
                 ) {
                     Text(
@@ -131,14 +200,14 @@ fun ProductItemWithoutDescription(content: ProductItemModel) {
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                Purple500,
-                                Teal200
+                                Indigo500,
+                                Indigo400
                             )
                         )
                     )
             ) {
                 Image(
-                    painter = painterResource(id = content.productImage),
+                    painter = painterResource(id = R.drawable.placeholder),
                     contentDescription = null,
                     modifier = Modifier
                         .size(size)
@@ -150,7 +219,7 @@ fun ProductItemWithoutDescription(content: ProductItemModel) {
             Spacer(modifier = Modifier.height(size / 2))
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = content.productName,
+                    text = content.name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
@@ -158,7 +227,7 @@ fun ProductItemWithoutDescription(content: ProductItemModel) {
 
                     )
                 Text(
-                    text = content.productValue.toConverterBrazilianCurrency(),
+                    text = content.price.toConverterBrazilianCurrency(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400),
                     modifier = Modifier.padding(top = 8.dp)
