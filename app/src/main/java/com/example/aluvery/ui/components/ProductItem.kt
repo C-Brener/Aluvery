@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.example.aluvery.R
 import com.example.aluvery.extensions.toConverterBrazilianCurrency
 import com.example.aluvery.models.ProductItemModel
@@ -66,11 +70,11 @@ fun ProductItem(product: ProductItemModel) {
                     )
                     .fillMaxWidth()
             ) {
-                Image(
-                    // TODO: ajustar imagem do produto
-                    painter = painterResource(id = R.drawable.placeholder),
+                SubcomposeAsyncImage(
+                    model = product.image,
+                    loading = { CircularProgressIndicator(color = Color.Red)},
                     contentDescription = null,
-                    Modifier
+                    modifier = Modifier
                         .size(imageSize)
                         .offset(y = imageSize / 2)
                         .clip(shape = CircleShape)
@@ -236,3 +240,12 @@ fun ProductItemWithoutDescription(content: ProductItemModel) {
         }
     }
 }
+
+
+// ---------- Coil ----------
+
+// O Coil é uma lib que trablha com o Kotlin para rederização de imagens fazendo requisção atráves da internet.
+// https://coil-kt.github.io/coil/compose/
+// O Coil como todo tem uma pagina espcifica para  jetpack compose
+// Para que o coil funcione corretamente precisamos implementar sua dependência em nosso projeto, precisamos declarar no android manifest o acesso a internet e por fim utilizar o composable especificio do coil
+// A utiliuzação do coil nos ajuda a flexibilizar o carregamento de imagens e pular etapas de requições um tanto complexas
