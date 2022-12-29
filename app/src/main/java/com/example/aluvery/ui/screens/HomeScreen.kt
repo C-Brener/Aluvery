@@ -1,11 +1,10 @@
 package com.example.aluvery.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,22 +19,16 @@ import com.example.aluvery.ui.theme.AluveryTheme
 fun HomeScreen(
     sections: Map<String, List<ProductItemModel>>
 ) {
-    Column(
+    val itens = sections.map { ItemsData(title = it.key, listItems = it.value) }
+    LazyColumn(
         Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(vertical = 10.dp)
     ) {
-        Spacer(Modifier)
-        for (section in sections) {
-            val title = section.key
-            val products = section.value
-            ProductsSection(
-                title = title,
-                products = products
-            )
+        items(itens) {
+            ProductsSection(title = it.title, products = it.listItems)
         }
-        Spacer(Modifier)
     }
 }
 
@@ -48,3 +41,14 @@ private fun HomeScreenPreview() {
         }
     }
 }
+
+data class ItemsData(
+    val title: String,
+    val listItems: List<ProductItemModel>
+)
+
+
+// ----------- Lazu Column
+
+// * O Lazy Column assim como tod lazy list, não aceita colecctions como parâmetro, apenas listas, para isso precisa-se fazer a conversão de colletion para lista como no modelo acima
+// * contentPadding coloca um padding na renderização de cada item
