@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.sampledata.sampleSections
-import com.example.aluvery.ui.components.ProductsSection
+import com.example.aluvery.ui.components.CardProductItem
 import com.example.aluvery.ui.theme.AluveryTheme
 
 const val TAG: String = "Testando"
@@ -64,7 +64,10 @@ fun HomeScreen(
             contentPadding = PaddingValues(vertical = 10.dp)
         ) {
             items(items) {
-                ProductsSection(title = it.title, products = it.listItems)
+//                ProductsSection(title = it.title, products = it.listItems)
+                it.listItems.forEach { itemCard ->
+                    CardProductItem(product = itemCard)
+                }
             }
         }
     }
