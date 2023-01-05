@@ -23,9 +23,10 @@ import com.example.aluvery.ui.theme.AluveryTheme
 @Composable
 fun ProductsSection(
     title: String,
+    modifier: Modifier = Modifier,
     products: List<ProductItemModel>
 ) {
-    Column {
+    Column(modifier = modifier) {
         Text(
             text = title,
             Modifier.padding(

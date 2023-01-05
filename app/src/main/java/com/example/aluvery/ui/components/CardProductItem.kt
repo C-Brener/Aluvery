@@ -28,12 +28,15 @@ import com.example.aluvery.ui.theme.AluveryTheme
 @Composable
 fun CardProductItem(
     product: ProductItemModel,
+    modifier: Modifier = Modifier,
     elevation: Dp = 4.dp
 ) {
     Card(
         Modifier
             .fillMaxWidth()
-            .heightIn(150.dp),
+            .padding(vertical = 15.dp)
+            .heightIn(150.dp)
+            .then(modifier),
         elevation = elevation
     ) {
         Column {

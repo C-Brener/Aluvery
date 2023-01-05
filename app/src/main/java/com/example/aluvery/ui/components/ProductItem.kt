@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import com.example.aluvery.R
 import com.example.aluvery.extensions.toConverterBrazilianCurrency
@@ -46,8 +45,9 @@ import com.example.aluvery.ui.theme.Indigo500
 import java.math.BigDecimal
 
 @Composable
-fun ProductItem(product: ProductItemModel) {
+fun ProductItem(product: ProductItemModel, modifier: Modifier = Modifier) {
     Surface(
+        modifier = modifier,
         shape = RoundedCornerShape(15.dp),
         elevation = 4.dp
     ) {
@@ -72,7 +72,7 @@ fun ProductItem(product: ProductItemModel) {
             ) {
                 SubcomposeAsyncImage(
                     model = product.image,
-                    loading = { CircularProgressIndicator(color = Color.Red)},
+                    loading = { CircularProgressIndicator(color = Color.Red) },
                     contentDescription = null,
                     modifier = Modifier
                         .size(imageSize)

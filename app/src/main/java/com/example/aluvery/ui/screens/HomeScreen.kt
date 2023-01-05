@@ -48,7 +48,7 @@ fun HomeScreen(
             maxLines = 1,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                .padding(16.dp),
             shape = RoundedCornerShape(percent = 100),
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Search, contentDescription = null)
@@ -61,12 +61,15 @@ fun HomeScreen(
             Modifier
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(vertical = 10.dp)
+            contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             items(items) {
 //                ProductsSection(title = it.title, products = it.listItems)
                 it.listItems.forEach { itemCard ->
-                    CardProductItem(product = itemCard)
+                    CardProductItem(
+                        product = itemCard,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
                 }
             }
         }
