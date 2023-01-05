@@ -175,10 +175,12 @@ fun ProductItemWithDescription(content: ProductItemModel) {
                         .background(Indigo500)
                         .fillMaxWidth()
                 ) {
-                    Text(
-                        text = content.description,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
+                    content.description?.let {
+                        Text(
+                            text = it,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                    }
                 }
             }
         }

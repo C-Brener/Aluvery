@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.sampledata.sampleSections
 import com.example.aluvery.ui.components.CardProductItem
+import com.example.aluvery.ui.components.ProductsSection
 import com.example.aluvery.ui.theme.AluveryTheme
 
 const val TAG: String = "Testando"
@@ -38,8 +39,7 @@ fun HomeScreen(
     var textInput by remember { mutableStateOf("") }
     val items = sections.map { ItemsData(title = it.key, listItems = it.value) }
     Column {
-        OutlinedTextField(
-            value = textInput,
+        OutlinedTextField(value = textInput,
             onValueChange = { value ->
                 Log.i(TAG, "HomeScreen: ")
                 textInput = value
@@ -55,22 +55,24 @@ fun HomeScreen(
             },
             placeholder = {
                 Text(text = "O que você procura?")
-            }
-        )
+            })
         LazyColumn(
-            Modifier
-                .fillMaxSize(),
+            Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             items(items) {
-//                ProductsSection(title = it.title, products = it.listItems)
-                it.listItems.forEach { itemCard ->
-                    CardProductItem(
-                        product = itemCard,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
+                if (textInput.isBlank()) {
+                    ProductsSection(title = it.title, products = it.listItems)
+
+                } else {
+                    it.listItems.forEach { itemCard ->
+                        CardProductItem(
+                            product = itemCard, modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                    }
                 }
+
             }
         }
     }
@@ -87,8 +89,7 @@ private fun HomeScreenPreview() {
 }
 
 data class ItemsData(
-    val title: String,
-    val listItems: List<ProductItemModel>
+    val title: String, val listItems: List<ProductItemModel>
 )
 
 
