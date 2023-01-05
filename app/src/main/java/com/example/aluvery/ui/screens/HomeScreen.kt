@@ -61,12 +61,20 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            items(items) {
+            items(items) { itemData ->
                 if (textInput.isBlank()) {
-                    ProductsSection(title = it.title, products = it.listItems)
+                    ProductsSection(title = itemData.title, products = itemData.listItems)
 
                 } else {
-                    it.listItems.forEach { itemCard ->
+                    val newList = remember(textInput) {
+                        itemData.listItems.filter { productItem ->
+                            productItem.name.contains(
+                                textInput,
+                                ignoreCase = true
+                            ) || productItem.description?.contains(textInput) ?: false
+                        }
+                    }
+                    newList.forEach { itemCard ->
                         CardProductItem(
                             product = itemCard, modifier = Modifier.padding(horizontal = 16.dp)
                         )
