@@ -1,21 +1,13 @@
 package com.example.aluvery.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,9 +20,9 @@ import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.sampledata.sampleSections
 import com.example.aluvery.ui.components.CardProductItem
 import com.example.aluvery.ui.components.ProductsSection
+import com.example.aluvery.ui.components.SearchTextField
 import com.example.aluvery.ui.theme.AluveryTheme
 
-const val TAG: String = "Testando"
 
 @Composable
 fun HomeScreen(
@@ -39,23 +31,9 @@ fun HomeScreen(
     var textInput by remember { mutableStateOf("") }
     val items = sections.map { ItemsData(title = it.key, listItems = it.value) }
     Column {
-        OutlinedTextField(value = textInput,
-            onValueChange = { value ->
-                Log.i(TAG, "HomeScreen: ")
-                textInput = value
-            },
-            label = { Text(text = "Produto") },
-            maxLines = 1,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(percent = 100),
-            leadingIcon = {
-                Icon(imageVector = Icons.Default.Search, contentDescription = null)
-            },
-            placeholder = {
-                Text(text = "O que você procura?")
-            })
+        SearchTextField(searchText = textInput) {
+            textInput = it
+        }
         LazyColumn(
             Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
