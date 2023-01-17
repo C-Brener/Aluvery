@@ -1,7 +1,6 @@
 package com.example.aluvery.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,7 +25,7 @@ fun ProductsSection(
     modifier: Modifier = Modifier,
     products: List<ProductItemModel>
 ) {
-    Column(modifier = modifier) {
+    Section(title = {
         Text(
             text = title,
             Modifier.padding(
@@ -36,11 +35,9 @@ fun ProductsSection(
             fontSize = 20.sp,
             fontWeight = FontWeight(400)
         )
+    }) {
         LazyRow(
             Modifier
-                .padding(
-                    top = 8.dp
-                )
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(horizontal = 10.dp)
@@ -51,6 +48,7 @@ fun ProductsSection(
             }
         }
     }
+
 }
 
 @Preview(showBackground = true)
