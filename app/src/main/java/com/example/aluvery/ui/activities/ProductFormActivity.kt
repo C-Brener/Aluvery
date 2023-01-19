@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -20,9 +23,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.aluvery.R
 import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
@@ -45,7 +52,8 @@ fun ProductFormScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         var url by remember {
@@ -61,7 +69,19 @@ fun ProductFormScreen() {
             mutableStateOf("")
         }
         Text(modifier = Modifier.fillMaxWidth(), text = "Criando Produto", fontSize = 28.sp)
+        if (url.isNotBlank()) {
+            AsyncImage(
+                model = url,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
+            )
 
+        }
         TextField(modifier = Modifier.fillMaxWidth(), value = url, onValueChange = {
             url = it
         }, label = { Text(text = "URL") })
@@ -116,3 +136,11 @@ fun ProductFormScreenPreview() {
 // o error é um "NumberFormatException" logo ele
 // trata esse erro da melhor forma que seria convertendo o erro
 // pra 0 pra não quebrar a aplicação
+
+
+//O Scroll só acontece quando a alteração é diretamente no
+// conteudo do compose e ultrapassa a nossa visualização,ou seja, caso o tamanho do composable
+// ultrapasse a tela, agora, caso seja uma ultrapassagem de
+// entrada, por criação de um novo conteudo, e abertura e teclado, issso não é identificado
+// pra isso precisamos alterar o manifest adicionando o parametro
+// "android:windowSoftInputMode="adjustResize"" dentro da activity que desejamos o comportamento de scroll na entrada
