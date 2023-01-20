@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
@@ -25,6 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,20 +86,47 @@ fun ProductFormScreen() {
             )
 
         }
-        TextField(modifier = Modifier.fillMaxWidth(), value = url, onValueChange = {
-            url = it
-        }, label = { Text(text = "URL") })
-        TextField(modifier = Modifier.fillMaxWidth(), value = name, onValueChange = {
-            name = it
-        }, label = { Text(text = "NAME") })
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = url,
+            onValueChange = {
+                url = it
+            },
+            label = { Text(text = "URL") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
+                imeAction = ImeAction.Next
+            )
+        )
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = name,
+            onValueChange = {
+                name = it
+            },
+            label = { Text(text = "NAME") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Sentences
+            )
+        )
         TextField(modifier = Modifier.fillMaxWidth(), value = price, onValueChange = {
             price = it
-        }, label = { Text(text = "PRICE") })
+        }, label = { Text(text = "PRICE") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Next,
+            ))
         TextField(modifier = Modifier
             .fillMaxWidth()
             .heightIn(100.dp), value = description, onValueChange = {
             description = it
-        }, label = { Text(text = "DESCRIPTION") })
+        }, label = { Text(text = "DESCRIPTION") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Sentences
+            ))
         Button(modifier = Modifier.fillMaxWidth(), onClick = {
             val convertedPrice = try {
                 BigDecimal(price)
@@ -144,3 +175,17 @@ fun ProductFormScreenPreview() {
 // entrada, por criação de um novo conteudo, e abertura e teclado, issso não é identificado
 // pra isso precisamos alterar o manifest adicionando o parametro
 // "android:windowSoftInputMode="adjustResize"" dentro da activity que desejamos o comportamento de scroll na entrada
+
+// Tipos de teclados
+
+// Os tipos de teclados são extremamaente importantes quando estamos lidando com input do usuário, pois isso pode evitar que os mesmo causem erros na aplicação, como por exemplo:
+// EX: Adicionar texto num campo só de numero.
+// Escolher o tipo de teclado influencia nessas questões, dito isso podemos simplesmente no composable de TextField algumas configurações impedindo esses erros:
+
+//        TextField(modifier = Modifier.fillMaxWidth(), value = price, onValueChange = {
+//            price = it
+//        }, label = { Text(text = "PRICE") },
+//            keyboardOptions = KeyboardOptions(
+//                keyboardType = KeyboardType.Decimal,
+//                imeAction = ImeAction.Next,
+//            ))
