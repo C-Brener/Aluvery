@@ -189,3 +189,4 @@ fun ProductFormScreenPreview() {
 //                keyboardType = KeyboardType.Decimal,
 //                imeAction = ImeAction.Next,
 //            ))
+// o ime -> "Input method Editor" seria a ação do botão inferior direto do teclado que pode ter varios metodos e utilizações
