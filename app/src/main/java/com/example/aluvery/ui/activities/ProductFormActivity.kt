@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -37,6 +38,7 @@ import com.example.aluvery.R
 import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
+import java.text.DecimalFormat
 
 class ProductFormActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +73,12 @@ fun ProductFormScreen() {
         }
         var description by remember {
             mutableStateOf("")
+        }
+        var formatter by remember {
+            mutableStateOf(DecimalFormat("#.##"))
+        }
+        var isError by remember {
+            mutableStateOf(false)
         }
         Text(modifier = Modifier.fillMaxWidth(), text = "Criando Produto", fontSize = 28.sp)
         if (url.isNotBlank()) {
@@ -112,12 +120,24 @@ fun ProductFormScreen() {
             )
         )
         TextField(modifier = Modifier.fillMaxWidth(), value = price, onValueChange = {
-            price = it
+            isError = try {
+                price = formatter.format(BigDecimal(it))
+                false
+            } catch (e: IllegalArgumentException) {
+                if (it.isBlank()) {
+                    price = it
+                }
+                true
+            }
         }, label = { Text(text = "PRICE") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Next,
-            ))
+            ), isError = isError
+        )
+        if (isError) {
+            TextError()
+        }
         TextField(modifier = Modifier
             .fillMaxWidth()
             .heightIn(100.dp), value = description, onValueChange = {
@@ -126,7 +146,8 @@ fun ProductFormScreen() {
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 capitalization = KeyboardCapitalization.Sentences
-            ))
+            )
+        )
         Button(modifier = Modifier.fillMaxWidth(), onClick = {
             val convertedPrice = try {
                 BigDecimal(price)
@@ -145,6 +166,15 @@ fun ProductFormScreen() {
             Text(text = "Criar produto")
         }
     }
+}
+
+@Composable
+fun TextError() {
+    Text(
+        text = "O padrão de inserção é \"5.00\", tente novamente",
+        color = Color.Red,
+        fontSize = 12.sp
+    )
 }
 
 @Preview(showSystemUi = true)
@@ -190,3 +220,7 @@ fun ProductFormScreenPreview() {
 //                imeAction = ImeAction.Next,
 //            ))
 // o ime -> "Input method Editor" seria a ação do botão inferior direto do teclado que pode ter varios metodos e utilizações
+
+//É possível filtrar o texto de acordo com o que desejamos, como no exemplo do commit"numero do commit" onde criamos um formatter
+// para definir qual seria o valor padrão aceito pelo input de preço, podemos manipular o onValueChange de diversas formas e essa é uma delas
+//https://www.alura.com.br/conteudo/expressoes-regulares -> Expressões regulares
