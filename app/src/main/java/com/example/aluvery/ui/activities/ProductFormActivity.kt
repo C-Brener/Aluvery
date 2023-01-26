@@ -15,6 +15,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -86,6 +90,9 @@ fun ProductFormScreen(saveProduct: (ProductItemModel) -> Unit = {}) {
         var isError by remember {
             mutableStateOf(false)
         }
+        var isTypeSelected by remember {
+            mutableStateOf("Todos os produtos")
+        }
         Text(modifier = Modifier.fillMaxWidth(), text = "Criando Produto", fontSize = 28.sp)
         if (url.isNotBlank()) {
             AsyncImage(
@@ -154,6 +161,9 @@ fun ProductFormScreen(saveProduct: (ProductItemModel) -> Unit = {}) {
                 capitalization = KeyboardCapitalization.Sentences
             )
         )
+        DropDownMenu() {
+            isTypeSelected = it
+        }
         Button(modifier = Modifier.fillMaxWidth(), onClick = {
             val convertedPrice = try {
                 BigDecimal(price)
@@ -165,7 +175,8 @@ fun ProductFormScreen(saveProduct: (ProductItemModel) -> Unit = {}) {
                 image = url,
                 price = convertedPrice,
                 description = description,
-                withDescription = true
+                withDescription = true,
+                typeProduct = isTypeSelected
             )
             saveProduct(newProduct)
             Log.i("Teste", "ProductFormScreen: ${newProduct.price}")
@@ -182,6 +193,54 @@ fun TextError() {
         color = Color.Red,
         fontSize = 12.sp
     )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun DropDownMenu(ontItemSelected: (String) -> Unit = {}) {
+    val listItems = arrayOf("Todos os produtos", "Doces", "Bebidas")
+
+    var selectedItem by remember {
+        mutableStateOf(listItems[0])
+    }
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        TextField(
+            value = selectedItem,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(text = "Tipo de Produto") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            listItems.forEach { selectedOption ->
+                // menu item
+                DropdownMenuItem(onClick = {
+                    ontItemSelected(selectedOption)
+                    selectedItem = selectedOption
+                    expanded = false
+                }) {
+                    Text(text = selectedOption)
+                }
+            }
+        }
+    }
 }
 
 @Preview(showSystemUi = true)

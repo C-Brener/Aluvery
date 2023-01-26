@@ -15,8 +15,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.aluvery.data.dao.ProductDao
-import com.example.aluvery.sampledata.sampleCandies
-import com.example.aluvery.sampledata.sampleDrinks
 import com.example.aluvery.ui.screens.HomeScreen
 import com.example.aluvery.ui.theme.AluveryTheme
 
@@ -36,9 +34,9 @@ class MainActivity : ComponentActivity() {
                 val productList = productDao.getList()
                 val sections = mapOf(
                     "Todos os produtos" to productList,
-                    "Promoções" to sampleDrinks + sampleCandies,
-                    "Doces" to sampleCandies,
-                    "Bebidas" to sampleDrinks
+                    "Promoções" to productList.filter { it.typeProduct == "Doces" || it.typeProduct == "Bebidas" },
+                    "Doces" to productList.filter { it.typeProduct == "Doces" },
+                    "Bebidas" to productList.filter { it.typeProduct == "Bebidas" }
                 )
                 HomeScreen(
                     sections = sections

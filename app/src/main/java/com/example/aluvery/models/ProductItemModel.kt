@@ -7,5 +7,6 @@ class ProductItemModel(
     val price: BigDecimal,
     val image: String? = null,
     val withDescription: Boolean = false,
-    val description: String? = null
+    val description: String? = null,
+    val typeProduct: String? = null
 )
