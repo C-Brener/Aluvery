@@ -1,14 +1,18 @@
 package com.example.aluvery.data.dao
 
-import com.example.aluvery.sampledata.sampleProducts
+import androidx.compose.runtime.mutableStateListOf
+import com.example.aluvery.models.ProductItemModel
 
 class ProductDao {
 
     companion object {
-        private val listproduct = sampleProducts.toMutableList()
+        private val listProduct = mutableStateListOf<ProductItemModel>()
     }
 
-    fun getList() = listproduct.toList()
+    fun getList() = listProduct.toList()
+    fun save(product: ProductItemModel) {
+        listProduct.add(product)
+    }
 }
 
 // DAO (Data Acess Objects) -> São objetos responsáveis pelo acesso e consulta
