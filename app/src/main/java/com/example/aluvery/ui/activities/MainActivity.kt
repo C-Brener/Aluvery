@@ -14,26 +14,42 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.aluvery.sampledata.sampleSections
+import com.example.aluvery.data.dao.ProductDao
+import com.example.aluvery.sampledata.sampleCandies
+import com.example.aluvery.sampledata.sampleDrinks
 import com.example.aluvery.ui.screens.HomeScreen
 import com.example.aluvery.ui.theme.AluveryTheme
 
 class MainActivity : ComponentActivity() {
+    val productDao = ProductDao()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             App(onFABClick = {
-                startActivity(Intent(
-                    this,
-                    ProductFormActivity::class.java
-                ))
-            })
+                startActivity(
+                    Intent(
+                        this,
+                        ProductFormActivity::class.java
+                    )
+                )
+            }) {
+                val productList = productDao.getList()
+                val sections = mapOf(
+                    "Todos os produtos" to productList,
+                    "Promoções" to sampleDrinks + sampleCandies,
+                    "Doces" to sampleCandies,
+                    "Bebidas" to sampleDrinks
+                )
+                HomeScreen(
+                    sections = sections
+                )
+            }
         }
     }
 }
 
 @Composable
-fun App(onFABClick: () -> Unit = {}) {
+fun App(onFABClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
     AluveryTheme {
         Surface {
             Scaffold(floatingActionButton = {
@@ -43,9 +59,7 @@ fun App(onFABClick: () -> Unit = {}) {
                 }
             }) {
                 Box(modifier = Modifier.padding(paddingValues = it)) {
-                    HomeScreen(
-                        sampleSections
-                    )
+                    content()
                 }
             }
         }
