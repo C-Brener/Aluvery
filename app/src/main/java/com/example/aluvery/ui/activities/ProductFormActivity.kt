@@ -223,4 +223,13 @@ fun ProductFormScreenPreview() {
 
 //É possível filtrar o texto de acordo com o que desejamos, como no exemplo do commit"numero do commit" onde criamos um formatter
 // para definir qual seria o valor padrão aceito pelo input de preço, podemos manipular o onValueChange de diversas formas e essa é uma delas
-//https://www.alura.com.br/conteudo/expressoes-regulares -> Expressões regulares
+//https://www.alura.com.br/conteudo/expressoes-regulares -> Expressões regulares.
+
+//Scaffold -> É um componente default do compose que nos dar algumas habilidades para usar o
+// componente do material, o scaffold como permite diversas manipulações e adicção de componentens
+// dentro de si mesmo, mas para que possamos utiliza-lo precisamos adicionar como parâmetro do que foi chamado dentro dele o seu padding values.
+
+
+// O compose trabalha com chamadas de estados, logo se faz necessário que evitemos que o composable lide com chamadas de sistems, tipo a
+// por intent feita nesse commit, é melhor que indiquemos que houve um evento e quem chamou o composable
+// em questão faça a chamada do contexto e a mudança de acordo com o , para isso podemos elevar a ação caso seja um botão para que o responsável por chamar esse composable decida o que fara com o clique
