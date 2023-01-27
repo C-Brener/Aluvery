@@ -211,7 +211,6 @@ fun DropDownMenu(ontItemSelected: (String) -> Unit = {}) {
         onExpandedChange = {
             expanded = !expanded
         },
-        modifier = Modifier.fillMaxWidth()
     ) {
         TextField(
             value = selectedItem,

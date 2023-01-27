@@ -15,7 +15,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.aluvery.data.dao.ProductDao
-import com.example.aluvery.ui.screens.HomeScreen
+import com.example.aluvery.sampledata.sampleCandies
+import com.example.aluvery.sampledata.sampleDrinks
+import com.example.aluvery.ui.screens.homescreen.HomeScreen
+import com.example.aluvery.ui.screens.homescreen.HomeScreenUIState
+import com.example.aluvery.ui.screens.homescreen.ItemsData
 import com.example.aluvery.ui.theme.AluveryTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,12 +38,17 @@ class MainActivity : ComponentActivity() {
                 val productList = productDao.getList()
                 val sections = mapOf(
                     "Todos os produtos" to productList,
-                    "Promoções" to productList.filter { it.typeProduct == "Doces" || it.typeProduct == "Bebidas" },
-                    "Doces" to productList.filter { it.typeProduct == "Doces" },
-                    "Bebidas" to productList.filter { it.typeProduct == "Bebidas" }
+                    "Promoções" to productList.filter { it.typeProduct == "Doces" || it.typeProduct == "Bebidas" } + sampleCandies + sampleDrinks,
+                    "Doces" to productList.filter { it.typeProduct == "Doces" } + sampleCandies,
+                    "Bebidas" to productList.filter { it.typeProduct == "Bebidas" } + sampleDrinks
                 )
+                val itemData = sections.map {
+                    ItemsData(title = it.key, listItems = it.value)
+                }
+                val state = HomeScreenUIState(itemsData = itemData, "a")
                 HomeScreen(
-                    sections = sections
+                    sections = sections,
+                    state = state
                 )
             }
         }
