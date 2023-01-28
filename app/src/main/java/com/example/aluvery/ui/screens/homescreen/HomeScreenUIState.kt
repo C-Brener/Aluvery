@@ -5,7 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.aluvery.models.ProductItemModel
 
-class HomeScreenUIState(private val itemsData: List<ItemsData>, searchedInitial: String = "") {
+class HomeScreenUIState(
+    private val itemsData: List<ItemsData>,
+    searchedInitial: String = "",
+) {
+
     var textInput by mutableStateOf(searchedInitial)
         private set
 
@@ -13,8 +17,8 @@ class HomeScreenUIState(private val itemsData: List<ItemsData>, searchedInitial:
 
     fun searchedProducts(): List<ProductItemModel> {
         var list = mutableListOf<ProductItemModel>()
-        itemsData.forEach {
-            list = it.listItems.filter { productItem ->
+        itemsData.forEach { item ->
+            list = item.listItems.filter { productItem ->
                 productItem.name.contains(
                     textInput,
                     ignoreCase = true
@@ -22,6 +26,10 @@ class HomeScreenUIState(private val itemsData: List<ItemsData>, searchedInitial:
             } as MutableList<ProductItemModel>
         }
         return list
+    }
+
+    fun itemDataList(): List<ItemsData> {
+        return itemsData
     }
 
     val onSearchChange: (String) -> Unit = { searchText ->
