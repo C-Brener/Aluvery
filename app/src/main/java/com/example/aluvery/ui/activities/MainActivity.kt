@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                 val itemData = sections.map {
                     ItemsData(title = it.key, listItems = it.value)
                 }
-                val state = remember(sections) { HomeScreenUIState(itemsData = itemData) }
+                val state = remember(productList) { HomeScreenUIState(itemsData = itemData) }
                 HomeScreen(
                     state = state
                 )
