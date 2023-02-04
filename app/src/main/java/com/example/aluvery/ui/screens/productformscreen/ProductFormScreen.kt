@@ -1,6 +1,5 @@
 package com.example.aluvery.ui.screens.productformscreen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,35 +35,67 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.aluvery.R
+import com.example.aluvery.data.dao.ProductDao
 import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
 import java.text.DecimalFormat
 
 @Composable
-fun ProductFormScreen(
-    saveProduct: (ProductItemModel) -> Unit = {},
-    state: ProductFormScreenUitState,
+fun ProductFormScreenStateFul(
+    onFinishScreen: (Boolean) -> Unit = {}
 ) {
+    val saveProduct = ProductDao()
+
+    var textName by remember {
+        mutableStateOf("")
+    }
     var url by remember {
         mutableStateOf("")
     }
     var price by remember {
         mutableStateOf("")
     }
-
     var description by remember {
         mutableStateOf("")
     }
-    var formatter by remember {
-        mutableStateOf(DecimalFormat("#.##"))
+    var isTypeSelected by remember {
+        mutableStateOf("")
     }
     var isError by remember {
         mutableStateOf(false)
     }
-    var isTypeSelected by remember {
-        mutableStateOf("Todos os produtos")
+    val state =
+        remember(textName, url, price, description, isTypeSelected, isError) {
+            ProductFormScreenUitState(
+                name = textName,
+                url = url,
+                price = price,
+                isError = isError,
+                description = description,
+                isTypeSelected = isTypeSelected,
+                onError = { isError = it },
+                isTypeSelectedChanged = { isTypeSelected = it },
+                onPriceChange = { price = it },
+                onUrlChange = { url = it },
+                onNameChange = { textName = it },
+                onDescriptionChange = { description = it },
+                saveProduct = {
+                    saveProduct.save(it)
+                    onFinishScreen(true)
+                }
+            )
+        }
+    val formatter by remember {
+        mutableStateOf(DecimalFormat("#.##"))
     }
+
+    ProductFormScreenStateLess(state = state, formatter = formatter)
+
+}
+
+@Composable
+fun ProductFormScreenStateLess(state: ProductFormScreenUitState, formatter: DecimalFormat) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -73,9 +104,9 @@ fun ProductFormScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(modifier = Modifier.fillMaxWidth(), text = "Criando Produto", fontSize = 28.sp)
-        if (url.isNotBlank()) {
+        if (state.url.isNotBlank()) {
             AsyncImage(
-                model = url,
+                model = state.url,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
@@ -88,9 +119,9 @@ fun ProductFormScreen(
         }
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = url,
+            value = state.url,
             onValueChange = {
-                url = it
+                state.onUrlChange(it)
             },
             label = { Text(text = "URL") },
             keyboardOptions = KeyboardOptions(
@@ -102,7 +133,8 @@ fun ProductFormScreen(
             modifier = Modifier.fillMaxWidth(),
             value = state.name,
             onValueChange = {
-                state.onSearchChange(it)
+                state.onNameChange(it)
+
             },
             label = { Text(text = "NAME") },
             keyboardOptions = KeyboardOptions(
@@ -111,29 +143,31 @@ fun ProductFormScreen(
                 capitalization = KeyboardCapitalization.Sentences
             )
         )
-        TextField(modifier = Modifier.fillMaxWidth(), value = price, onValueChange = {
-            isError = try {
-                price = formatter.format(BigDecimal(it))
-                false
-            } catch (e: IllegalArgumentException) {
-                if (it.isBlank()) {
-                    price = it
+        TextField(modifier = Modifier.fillMaxWidth(), value = state.price, onValueChange = {
+            state.onError(
+                try {
+                    state.onPriceChange(formatter.format(BigDecimal(it)))
+                    false
+                } catch (e: IllegalArgumentException) {
+                    if (it.isBlank()) {
+                        state.onPriceChange(it)
+                    }
+                    true
                 }
-                true
-            }
+            )
         }, label = { Text(text = "PRICE") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Next,
-            ), isError = isError
+            ), isError = state.isError
         )
-        if (isError) {
+        if (state.isError) {
             TextError()
         }
         TextField(modifier = Modifier
             .fillMaxWidth()
-            .heightIn(100.dp), value = description, onValueChange = {
-            description = it
+            .heightIn(100.dp), value = state.description, onValueChange = {
+            state.onDescriptionChange(it)
         }, label = { Text(text = "DESCRIPTION") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -141,24 +175,23 @@ fun ProductFormScreen(
             )
         )
         DropDownMenu() {
-            isTypeSelected = it
+            state.isTypeSelectedChanged(it)
         }
         Button(modifier = Modifier.fillMaxWidth(), onClick = {
             val convertedPrice = try {
-                BigDecimal(price)
+                BigDecimal(state.price)
             } catch (e: NumberFormatException) {
                 BigDecimal(0)
             }
             val newProduct = ProductItemModel(
                 name = state.name,
-                image = url,
+                image = state.url,
                 price = convertedPrice,
-                description = description,
+                description = state.description,
                 withDescription = true,
-                typeProduct = isTypeSelected
+                typeProduct = state.isTypeSelected
             )
-            saveProduct(newProduct)
-            Log.i("Teste", "ProductFormScreen: ${newProduct.price}")
+            state.saveProduct(newProduct)
         }) {
             Text(text = "Criar produto")
         }
@@ -226,7 +259,7 @@ fun DropDownMenu(ontItemSelected: (String) -> Unit = {}) {
 fun ProductFormScreenPreview() {
     AluveryTheme {
         Surface {
-            ProductFormScreen(state = ProductFormScreenUitState("", onSearchChange = {}))
+            ProductFormScreenStateFul()
         }
     }
 }

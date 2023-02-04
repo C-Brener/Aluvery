@@ -4,36 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.example.aluvery.data.dao.ProductDao
-import com.example.aluvery.ui.screens.productformscreen.ProductFormScreen
-import com.example.aluvery.ui.screens.productformscreen.ProductFormScreenUitState
+import com.example.aluvery.ui.screens.productformscreen.ProductFormScreenStateFul
 import com.example.aluvery.ui.theme.AluveryTheme
 
 class ProductFormActivity : ComponentActivity() {
 
-    val saveProduct = ProductDao()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AluveryTheme {
                 Surface {
-                    var textName by remember {
-                        mutableStateOf("")
-                    }
-
-                    val state = remember(textName) {
-                        ProductFormScreenUitState(textName) {
-                            textName = it
-                        }
-                    }
-                    ProductFormScreen(state = state, saveProduct = { productItem ->
-                        saveProduct.save(productItem)
+                    ProductFormScreenStateFul(){
                         finish()
-                    })
+                    }
                 }
             }
         }
