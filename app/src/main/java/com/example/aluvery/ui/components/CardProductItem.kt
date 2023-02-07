@@ -38,7 +38,7 @@ fun CardProductItem(
     modifier: Modifier = Modifier,
     elevation: Dp = 4.dp
 ) {
-    var expandend by remember {
+    var expanded by remember {
         mutableStateOf(false)
     }
     Card(
@@ -46,7 +46,7 @@ fun CardProductItem(
             .fillMaxWidth()
             .padding(vertical = 15.dp)
             .heightIn(150.dp)
-            .clickable { expandend = !expandend }
+            .clickable { expanded = !expanded }
             .then(modifier),
         elevation = elevation
     ) {
@@ -74,13 +74,14 @@ fun CardProductItem(
                 )
             }
             product.description?.let {
-                Text(
-                    text = it,
-                    Modifier
-                        .padding(16.dp),
-                    maxLines = if (expandend) Int.MAX_VALUE else 2,
-                    overflow = if (expandend) TextOverflow.Clip else TextOverflow.Ellipsis,
-                )
+                if(expanded){
+                    Text(
+                        text = it,
+                        Modifier
+                            .padding(16.dp),
+                    )
+                }
+
             }
         }
     }
