@@ -1,18 +1,11 @@
 package com.example.aluvery.ui.screens.homescreen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +29,7 @@ fun HomeScreenStateFul(productList: List<ProductItemModel>) {
     val itemData = sections.map {
         ItemsData(title = it.key, listItems = it.value)
     }
-    var textInput by remember {
+    var textInput by rememberSaveable {
         mutableStateOf("")
     }
     val state = remember(productList, textInput) {
@@ -66,7 +59,7 @@ fun HomeScreenStateLess(
                 } else {
                     searchedProducts.forEach { itemCard ->
                         CardProductItem(
-                            product = itemCard, modifier = Modifier.padding(horizontal = 16.dp)
+                            product = itemCard, modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
                         )
                     }
                 }

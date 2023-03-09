@@ -26,7 +26,7 @@ class HomeScreenUIState(
         productItem.name.contains(
             textInput,
             ignoreCase = true
-        ) || productItem.description?.contains(textInput) ?: false
+        ) || productItem.description?.contains(textInput, ignoreCase = true) ?: false
 
     fun itemDataList(): List<ItemsData> {
         return itemsData
