@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -27,7 +28,7 @@ fun CardProductItem(
     elevation: Dp = 4.dp,
     isExpanded: Boolean = false
 ) {
-    var expanded by remember {
+    var expanded by rememberSaveable {
         mutableStateOf(isExpanded)
     }
     Card(
