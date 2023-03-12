@@ -4,48 +4,35 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aluvery.models.ProductItemModel
-import com.example.aluvery.sampledata.sampleCandies
-import com.example.aluvery.sampledata.sampleDrinks
 import com.example.aluvery.ui.components.CardProductItem
 import com.example.aluvery.ui.components.ProductsSection
 import com.example.aluvery.ui.components.SearchTextField
+import com.example.aluvery.ui.states.HomeScreenUIState
 import com.example.aluvery.ui.theme.AluveryTheme
 import com.example.aluvery.ui.viewmodels.HomeScreenViewModel
-import kotlinx.coroutines.flow.*
 
 
 @Composable
-fun HomeScreenStateFul(viewModel: HomeScreenViewModel, productList: List<ProductItemModel>) {
-    val sections = mapOf(
-        "Todos os produtos" to productList,
-        "Promoções" to productList.filter { it.typeProduct == "Doces" || it.typeProduct == "Bebidas" } + sampleCandies + sampleDrinks,
-        "Doces" to productList.filter { it.typeProduct == "Doces" } + sampleCandies,
-        "Bebidas" to productList.filter { it.typeProduct == "Bebidas" } + sampleDrinks
-    )
-    val itemData = sections.map {
-        ItemsData(title = it.key, listItems = it.value)
-    }
-    var textInput by rememberSaveable {
-        mutableStateOf("")
-    }
-    val state = viewModel.uitState.value
-    HomeScreenStateLess(state = state)
+fun HomeScreenStateFul(viewModel: HomeScreenViewModel) {
+    HomeScreenStateLess(state = viewModel.uiState)
 }
 
 @Composable
 fun HomeScreenStateLess(
-    state: HomeScreenUIState = HomeScreenUIState()
+    state: HomeScreenUIState
 ) {
-    val items = state.itemDataList()
-    val searchedProducts = state.searchedProducts()
+    val items = state.itemsData
+    val searchedProducts = state.searchProducts
     Column {
-        SearchTextField(searchText = state.textInput, searchTextChanged = state.onSearchChange)
+        SearchTextField(
+            searchText = state.textInput,
+            searchTextChanged = state.onSearchChange
+        )
         LazyColumn(
             Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -72,7 +59,7 @@ fun HomeScreenStateLess(
 private fun HomeScreenPreview() {
     AluveryTheme {
         Surface {
-            HomeScreenStateLess(HomeScreenUIState(listOf()))
+            HomeScreenStateLess(HomeScreenViewModel().uiState)
         }
     }
 }

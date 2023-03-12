@@ -21,7 +21,6 @@ import com.example.aluvery.ui.theme.AluveryTheme
 import com.example.aluvery.ui.viewmodels.HomeScreenViewModel
 
 class MainActivity : ComponentActivity() {
-    private val productDao = ProductDao()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -33,10 +32,8 @@ class MainActivity : ComponentActivity() {
                     )
                 )
             }) {
-                val productList = productDao.getList()
                 val viewModel: HomeScreenViewModel by viewModels()
                 HomeScreenStateFul(
-                    productList = productList,
                     viewModel = viewModel
                 )
             }
