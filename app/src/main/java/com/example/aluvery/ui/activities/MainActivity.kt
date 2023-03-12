@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import com.example.aluvery.data.dao.ProductDao
 import com.example.aluvery.ui.screens.homescreen.HomeScreenStateFul
 import com.example.aluvery.ui.theme.AluveryTheme
+import com.example.aluvery.ui.viewmodels.HomeScreenViewModel
 
 class MainActivity : ComponentActivity() {
     private val productDao = ProductDao()
@@ -32,8 +34,10 @@ class MainActivity : ComponentActivity() {
                 )
             }) {
                 val productList = productDao.getList()
+                val viewModel: HomeScreenViewModel by viewModels()
                 HomeScreenStateFul(
-                    productList = productList
+                    productList = productList,
+                    viewModel = viewModel
                 )
             }
         }

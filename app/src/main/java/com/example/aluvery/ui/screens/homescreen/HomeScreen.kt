@@ -16,10 +16,12 @@ import com.example.aluvery.ui.components.CardProductItem
 import com.example.aluvery.ui.components.ProductsSection
 import com.example.aluvery.ui.components.SearchTextField
 import com.example.aluvery.ui.theme.AluveryTheme
+import com.example.aluvery.ui.viewmodels.HomeScreenViewModel
+import kotlinx.coroutines.flow.*
 
 
 @Composable
-fun HomeScreenStateFul(productList: List<ProductItemModel>) {
+fun HomeScreenStateFul(viewModel: HomeScreenViewModel, productList: List<ProductItemModel>) {
     val sections = mapOf(
         "Todos os produtos" to productList,
         "Promoções" to productList.filter { it.typeProduct == "Doces" || it.typeProduct == "Bebidas" } + sampleCandies + sampleDrinks,
@@ -32,11 +34,7 @@ fun HomeScreenStateFul(productList: List<ProductItemModel>) {
     var textInput by rememberSaveable {
         mutableStateOf("")
     }
-    val state = remember(productList, textInput) {
-        HomeScreenUIState(itemsData = itemData, textInput, onSearchChange = {
-            textInput = it
-        })
-    }
+    val state = viewModel.uitState.value
     HomeScreenStateLess(state = state)
 }
 
@@ -59,7 +57,8 @@ fun HomeScreenStateLess(
                 } else {
                     searchedProducts.forEach { itemCard ->
                         CardProductItem(
-                            product = itemCard, modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                            product = itemCard,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
                         )
                     }
                 }
