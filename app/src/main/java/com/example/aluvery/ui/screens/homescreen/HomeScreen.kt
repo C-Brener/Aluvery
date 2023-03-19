@@ -19,6 +19,7 @@ import com.example.aluvery.ui.viewmodels.HomeScreenViewModel
 
 @Composable
 fun HomeScreenStateFul(viewModel: HomeScreenViewModel) {
+    viewModel.findProducts()
     HomeScreenStateLess(state = viewModel.uiState)
 }
 
