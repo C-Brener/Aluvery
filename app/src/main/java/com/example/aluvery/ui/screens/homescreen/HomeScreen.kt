@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,7 +22,8 @@ import com.example.aluvery.ui.viewmodels.HomeScreenViewModel
 @Composable
 fun HomeScreenStateFul(viewModel: HomeScreenViewModel) {
     viewModel.findProducts()
-    HomeScreenStateLess(state = viewModel.uiState)
+    val state by viewModel.uiState.collectAsState()
+    HomeScreenStateLess(state = state)
 }
 
 @Composable
@@ -60,7 +63,7 @@ fun HomeScreenStateLess(
 private fun HomeScreenPreview() {
     AluveryTheme {
         Surface {
-            HomeScreenStateLess(HomeScreenViewModel().uiState)
+//            HomeScreenStateLess(HomeScreenViewModel().uiState)
         }
     }
 }

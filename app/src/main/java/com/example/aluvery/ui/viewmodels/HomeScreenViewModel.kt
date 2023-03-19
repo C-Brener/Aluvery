@@ -1,8 +1,5 @@
 package com.example.aluvery.ui.viewmodels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aluvery.data.dao.ProductDao
@@ -12,6 +9,10 @@ import com.example.aluvery.sampledata.sampleDrinks
 import com.example.aluvery.sampledata.sampleProducts
 import com.example.aluvery.ui.screens.homescreen.ItemsData
 import com.example.aluvery.ui.states.HomeScreenUIState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel : ViewModel() {
@@ -30,20 +31,25 @@ class HomeScreenViewModel : ViewModel() {
         }
     }
 
-    var uiState: HomeScreenUIState by mutableStateOf(HomeScreenUIState(
-        itemsData = getList(),
-        onSearchChange = {
-            uiState = uiState.copy(textInput = it, searchProducts = searchedProducts(it))
-        }
-    ))
-        private set
+    private var _uiState: MutableStateFlow<HomeScreenUIState> =
+        MutableStateFlow(HomeScreenUIState())
+    val uiState: StateFlow<HomeScreenUIState> = _uiState.asStateFlow()
 
 
     init {
+        _uiState.update { currentHomeScreenUIState ->
+            currentHomeScreenUIState.copy(
+                onSearchChange = {
+                    _uiState.value =
+                        _uiState.value.copy(textInput = it, searchProducts = searchedProducts(it))
+                }
+            )
+        }
         viewModelScope.launch {
             productDao.getList().collect { products ->
-                uiState = uiState.copy(
-                    itemsData = getList()
+                _uiState.value = _uiState.value.copy(
+                    itemsData = getList(),
+                    searchProducts = searchedProducts(_uiState.value.textInput)
                 )
             }
         }
@@ -58,7 +64,7 @@ class HomeScreenViewModel : ViewModel() {
     }
 
     fun findProducts() {
-        uiState = uiState.copy(
+        _uiState.value = _uiState.value.copy(
             itemsData = getList()
         )
     }
