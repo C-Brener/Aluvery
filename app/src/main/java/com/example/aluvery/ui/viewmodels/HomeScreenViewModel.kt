@@ -17,21 +17,8 @@ import kotlinx.coroutines.launch
 
 class HomeScreenViewModel : ViewModel() {
     private val productDao = ProductDao()
-    private fun getList(): List<ItemsData> {
-        val createSections = mapOf(
-            "Todos os produtos" to productDao.getList().value,
-            "Promoções" to productDao.getList()
-                .value.filter { it.typeProduct == "Doces" || it.typeProduct == "Bebidas" } + sampleCandies + sampleDrinks,
-            "Doces" to productDao.getList().value.filter { it.typeProduct == "Doces" } + sampleCandies,
-            "Bebidas" to productDao.getList().value.filter { it.typeProduct == "Bebidas" } + sampleDrinks
-        )
 
-        return createSections.map {
-            ItemsData(title = it.key, listItems = it.value)
-        }
-    }
-
-    private var _uiState: MutableStateFlow<HomeScreenUIState> =
+    private val _uiState: MutableStateFlow<HomeScreenUIState> =
         MutableStateFlow(HomeScreenUIState())
     val uiState: StateFlow<HomeScreenUIState> = _uiState.asStateFlow()
 
@@ -52,6 +39,20 @@ class HomeScreenViewModel : ViewModel() {
                     searchProducts = searchedProducts(_uiState.value.textInput)
                 )
             }
+        }
+    }
+
+    private fun getList(): List<ItemsData> {
+        val createSections = mapOf(
+            "Todos os produtos" to productDao.getList().value,
+            "Promoções" to productDao.getList()
+                .value.filter { it.typeProduct == "Doces" || it.typeProduct == "Bebidas" } + sampleCandies + sampleDrinks,
+            "Doces" to productDao.getList().value.filter { it.typeProduct == "Doces" } + sampleCandies,
+            "Bebidas" to productDao.getList().value.filter { it.typeProduct == "Bebidas" } + sampleDrinks
+        )
+
+        return createSections.map {
+            ItemsData(title = it.key, listItems = it.value)
         }
     }
 
@@ -81,3 +82,7 @@ class HomeScreenViewModel : ViewModel() {
 
 
 }
+
+
+//Quando trabalhamos com val, temos a capacidade de evitar que haja uma alteração na instãncia, ou seja, trabalhamos com a mesma instância, como valores internos sendo atualizados
+// QUando estamos trabalhando com UIState, os mesmos precisam ser data class o que permite que possamos ter acesso a instância do .copy

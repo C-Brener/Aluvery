@@ -3,19 +3,20 @@ package com.example.aluvery.ui.activities
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material.Surface
-import com.example.aluvery.data.dao.ProductDao
 import com.example.aluvery.ui.screens.productformscreen.ProductFormScreenStateFul
 import com.example.aluvery.ui.theme.AluveryTheme
+import com.example.aluvery.ui.viewmodels.ProductFormScreenViewModel
 
 class ProductFormActivity : ComponentActivity() {
-
+    val viewModel: ProductFormScreenViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AluveryTheme {
                 Surface {
-                    ProductFormScreenStateFul(){
+                    ProductFormScreenStateFul(viewModel) {
                         finish()
                     }
                 }

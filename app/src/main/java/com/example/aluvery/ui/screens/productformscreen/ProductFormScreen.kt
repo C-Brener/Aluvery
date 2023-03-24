@@ -1,29 +1,12 @@
 package com.example.aluvery.ui.screens.productformscreen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.ExposedDropdownMenuDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -39,64 +22,27 @@ import com.example.aluvery.R
 import com.example.aluvery.data.dao.ProductDao
 import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.ui.theme.AluveryTheme
+import com.example.aluvery.ui.viewmodels.ProductFormScreenViewModel
 import java.math.BigDecimal
-import java.text.DecimalFormat
 
 @Composable
 fun ProductFormScreenStateFul(
+    viewModel: ProductFormScreenViewModel,
     onFinishScreen: (Boolean) -> Unit = {}
 ) {
     val saveProduct = ProductDao()
 
-    var textName by rememberSaveable {
-        mutableStateOf("")
-    }
-    var url by rememberSaveable {
-        mutableStateOf("")
-    }
-    var price by rememberSaveable {
-        mutableStateOf("")
-    }
-    var description by rememberSaveable {
-        mutableStateOf("")
-    }
     var isTypeSelected by rememberSaveable {
         mutableStateOf("")
     }
-    var isError by remember {
-        mutableStateOf(false)
-    }
-    val state =
-        remember(textName, url, price, description, isTypeSelected, isError) {
-            ProductFormScreenUitState(
-                name = textName,
-                url = url,
-                price = price,
-                isError = isError,
-                description = description,
-                isTypeSelected = isTypeSelected,
-                onError = { isError = it },
-                isTypeSelectedChanged = { isTypeSelected = it },
-                onPriceChange = { price = it },
-                onUrlChange = { url = it },
-                onNameChange = { textName = it },
-                onDescriptionChange = { description = it },
-                saveProduct = {
-                    saveProduct.save(it)
-                    onFinishScreen(true)
-                }
-            )
-        }
-    val formatter by remember {
-        mutableStateOf(DecimalFormat("#.##"))
-    }
+    val state by viewModel.uiState.collectAsState()
 
-    ProductFormScreenStateLess(state = state, formatter = formatter)
+    ProductFormScreenStateLess(state = state)
 
 }
 
 @Composable
-fun ProductFormScreenStateLess(state: ProductFormScreenUitState, formatter: DecimalFormat) {
+fun ProductFormScreenStateLess(state: ProductFormScreenUitState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -145,17 +91,7 @@ fun ProductFormScreenStateLess(state: ProductFormScreenUitState, formatter: Deci
             )
         )
         TextField(modifier = Modifier.fillMaxWidth(), value = state.price, onValueChange = {
-            state.onError(
-                try {
-                    state.onPriceChange(formatter.format(BigDecimal(it)))
-                    false
-                } catch (e: IllegalArgumentException) {
-                    if (it.isBlank()) {
-                        state.onPriceChange(it)
-                    }
-                    true
-                }
-            )
+            state.onPriceChange(it)
         }, label = { Text(text = "PRICE") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
@@ -260,7 +196,7 @@ fun DropDownMenu(ontItemSelected: (String) -> Unit = {}) {
 fun ProductFormScreenPreview() {
     AluveryTheme {
         Surface {
-            ProductFormScreenStateFul()
+            ProductFormScreenStateFul(viewModel = ProductFormScreenViewModel())
         }
     }
 }
