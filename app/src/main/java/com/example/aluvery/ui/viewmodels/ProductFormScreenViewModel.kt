@@ -1,6 +1,8 @@
 package com.example.aluvery.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
+import com.example.aluvery.data.dao.ProductDao
+import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.ui.screens.productformscreen.ProductFormScreenUitState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,12 +12,13 @@ import java.math.BigDecimal
 import java.text.DecimalFormat
 
 class ProductFormScreenViewModel : ViewModel() {
+    private val dao = ProductDao()
 
     private val _uiState: MutableStateFlow<ProductFormScreenUitState> =
         MutableStateFlow(ProductFormScreenUitState())
     val uiState: StateFlow<ProductFormScreenUitState> = _uiState.asStateFlow()
 
-    val formatter =
+    private val formatter =
         DecimalFormat("#.##")
 
 
@@ -52,10 +55,34 @@ class ProductFormScreenViewModel : ViewModel() {
                         _uiState.value =
                             _uiState.value.copy(price = price)
                     }
+                },
+                isTypeSelectedChanged = {
+                    _uiState.value =
+                        _uiState.value.copy(isTypeSelected = it)
                 }
             )
         }
 
     }
+
+    fun save() {
+        _uiState.value.run {
+            val convertedPrice = try {
+                BigDecimal(price)
+            } catch (e: NumberFormatException) {
+                BigDecimal(0)
+            }
+            val newProduct = ProductItemModel(
+                name = name,
+                image = url,
+                price = convertedPrice,
+                description = description,
+                withDescription = true,
+                typeProduct = isTypeSelected
+            )
+            dao.save(newProduct)
+        }
+    }
+
 
 }

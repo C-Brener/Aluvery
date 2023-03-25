@@ -6,7 +6,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -19,30 +18,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.aluvery.R
-import com.example.aluvery.data.dao.ProductDao
-import com.example.aluvery.models.ProductItemModel
 import com.example.aluvery.ui.theme.AluveryTheme
 import com.example.aluvery.ui.viewmodels.ProductFormScreenViewModel
-import java.math.BigDecimal
 
 @Composable
 fun ProductFormScreenStateFul(
     viewModel: ProductFormScreenViewModel,
     onFinishScreen: (Boolean) -> Unit = {}
 ) {
-    val saveProduct = ProductDao()
-
-    var isTypeSelected by rememberSaveable {
-        mutableStateOf("")
-    }
     val state by viewModel.uiState.collectAsState()
 
-    ProductFormScreenStateLess(state = state)
-
+    ProductFormScreenStateLess(state = state) {
+        viewModel.save()
+        onFinishScreen(true)
+    }
 }
 
 @Composable
-fun ProductFormScreenStateLess(state: ProductFormScreenUitState) {
+fun ProductFormScreenStateLess(state: ProductFormScreenUitState, onSaveClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,22 +107,7 @@ fun ProductFormScreenStateLess(state: ProductFormScreenUitState) {
         DropDownMenu() {
             state.isTypeSelectedChanged(it)
         }
-        Button(modifier = Modifier.fillMaxWidth(), onClick = {
-            val convertedPrice = try {
-                BigDecimal(state.price)
-            } catch (e: NumberFormatException) {
-                BigDecimal(0)
-            }
-            val newProduct = ProductItemModel(
-                name = state.name,
-                image = state.url,
-                price = convertedPrice,
-                description = state.description,
-                withDescription = true,
-                typeProduct = state.isTypeSelected
-            )
-            state.saveProduct(newProduct)
-        }) {
+        Button(modifier = Modifier.fillMaxWidth(), onClick = onSaveClick) {
             Text(text = "Criar produto")
         }
     }

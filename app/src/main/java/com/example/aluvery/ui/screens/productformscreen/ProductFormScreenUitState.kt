@@ -15,5 +15,6 @@ data class ProductFormScreenUitState(
     val onDescriptionChange: (String) -> Unit = {},
     val onError: (Boolean) -> Unit = {},
     val isTypeSelectedChanged: (String) -> Unit = {},
-    val saveProduct: (ProductItemModel) -> Unit = {}
-)
+) {
+    val isShowPreview: Boolean get() = url.isNotBlank()
+}
